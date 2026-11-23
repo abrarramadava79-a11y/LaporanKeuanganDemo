@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eracom.id — ERA Analytics &amp; Dashboard Keuangan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: {
+              950: '#04070e',
+              900: '#070c18',
+              850: '#0b1224',
+              800: '#101930',
+            },
+            erablue: {
+              400: '#38bdf8',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+            },
+            eraorange: {
+              400: '#fbbf24',
+              500: '#f97316',
+              600: '#ea580c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* =========================================================================
+       GLOSSY DARK GLASSMORPHISM & BRUSHED OBSIDIAN METALLIC THEME (eracom.id)
+       ========================================================================= */
+    :root {
+      --bg-obsidian: #050914;
+      --glass-bg: rgba(15, 23, 42, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-specular: rgba(255, 255, 255, 0.28);
+    }
+
+    body {
+      background-color: var(--bg-obsidian);
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* Diagonal Brushed Dark-Steel Obsidian Background with Electric Blue & Amber Flares */
+    .metallic-obsidian-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-color: #050914;
+      background-image:
+        radial-gradient(circle at 12% 16%, rgba(37, 99, 235, 0.26) 0%, transparent 44%),
+        radial-gradient(circle at 88% 18%, rgba(249, 115, 22, 0.22) 0%, transparent 42%),
+        radial-gradient(circle at 52% 92%, rgba(29, 78, 216, 0.18) 0%, transparent 50%),
+        linear-gradient(135deg,
+          rgba(255, 255, 255, 0.03) 0%,
+          rgba(255, 255, 255, 0.00) 18%,
+          rgba(37, 99, 235, 0.08) 24%,
+          rgba(255, 255, 255, 0.06) 25.4%,
+          rgba(15, 23, 42, 0.25) 27%,
+          rgba(255, 255, 255, 0.00) 48%,
+          rgba(249, 115, 22, 0.08) 54%,
+          rgba(255, 255, 255, 0.05) 55.2%,
+          rgba(15, 23, 42, 0.25) 57%,
+          rgba(255, 255, 255, 0.00) 78%,
+          rgba(56, 189, 248, 0.07) 84%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+    }
+
+    /* Fine Brushed Metal Micro-Grain */
+    .metallic-obsidian-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.015) 0px,
+        rgba(255, 255, 255, 0.015) 1px,
+        transparent 1px,
+        transparent 5px
+      );
+      pointer-events: none;
+    }
+
+    /* Core Glossy Dark Glass Panel */
+    .glossy-glass {
+      position: relative;
+      background: linear-gradient(
+        150deg,
+        rgba(22, 33, 56, 0.74) 0%,
+        rgba(15, 23, 42, 0.78) 55%,
+        rgba(8, 13, 26, 0.88) 100%
+      );
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-top: 1px solid rgba(255, 255, 255, 0.26);
+      border-left: 1px solid rgba(255, 255, 255, 0.20);
+      box-shadow:
+        0 18px 42px -14px rgba(0, 0, 0, 0.78),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+    }
+
+    /* Glossy Interactive Card with Specular Hover Glow */
+    .glossy-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(
+        155deg,
+        rgba(26, 38, 64, 0.70) 0%,
+        rgba(12, 19, 36, 0.84) 100%
+      );
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-top: 1px solid rgba(255, 255, 255, 0.28);
+      border-left: 1px solid rgba(255, 255, 255, 0.20);
+      box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.72);
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.26s ease,
+                  box-shadow 0.26s ease;
+    }
+
+    .glossy-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.45);
+      border-top-color: rgba(255, 255, 255, 0.44);
+      box-shadow:
+        0 20px 44px -12px rgba(0, 0, 0, 0.84),
+        0 0 26px -4px rgba(37, 99, 235, 0.28);
+    }
+
+    /* Top Specular Reflection Overlay */
+    .glossy-sheen::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.10) 0%,
+        rgba(255, 255, 255, 0.02) 65%,
+        transparent 100%
+      );
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* Glossy Royal-Blue Button */
+    .btn-glossy-blue {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+      border: 1px solid rgba(147, 197, 253, 0.45);
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow:
+        0 8px 20px -4px rgba(37, 99, 235, 0.55),
+        inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      transition: all 0.2s ease;
+    }
+    .btn-glossy-blue:hover {
+      filter: brightness(1.08);
+      box-shadow:
+        0 10px 26px -3px rgba(59, 130, 246, 0.68),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    }
+    .btn-glossy-blue:active { transform: scale(0.98); }
+
+    /* Glossy Orange-Gold Accent Button */
+    .btn-glossy-orange {
+      background: linear-gradient(180deg, #fbbf24 0%, #f97316 52%, #ea580c 100%);
+      border: 1px solid rgba(253, 186, 116, 0.55);
+      border-top: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow:
+        0 8px 22px -4px rgba(249, 115, 22, 0.55),
+        inset 0 1px 1px rgba(255, 255, 255, 0.55);
+      color: #050914;
+      transition: all 0.2s ease;
+    }
+    .btn-glossy-orange:hover {
+      filter: brightness(1.06);
+      box-shadow:
+        0 12px 28px -3px rgba(251, 191, 36, 0.65),
+        inset 0 1px 1px rgba(255, 255, 255, 0.7);
+    }
+    .btn-glossy-orange:active { transform: scale(0.98); }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(5, 9, 20, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.55); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Clean Executive PDF / Print Stylesheet */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .metallic-obsidian-bg, .no-print, #toast-container {
+        display: none !important;
+      }
+      .glossy-glass, .glossy-card {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+        backdrop-filter: none !important;
+      }
+      .glossy-sheen::before { display: none !important; }
+      * {
+        color: #0f172a !important;
+        text-shadow: none !important;
+      }
+      #print-executive-header {
+        display: flex !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-orange-500 selection:text-white min-h-screen flex flex-col">
+
+  <!-- Brushed Dark-Steel Obsidian Background -->
+  <div class="metallic-obsidian-bg"></div>
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+  <!-- Print-Only Formal Header (for Clean PDF Output) -->
+  <div id="print-executive-header" class="hidden items-center justify-between border-b-2 border-slate-800 pb-4 mb-6 px-6 pt-6">
+    <div>
+      <div class="text-xl font-extrabold">eracom.id — ERA Analytics &amp; Dashboard Keuangan</div>
+      <div class="text-xs text-slate-600">Laporan Eksekutif Finansial Perusahaan • Dicetak Otomatis</div>
+    </div>
+    <div class="text-right text-xs">
+      <div id="print-meta-unit" class="font-bold">Unit: Semua Unit (Konsolidasi)</div>
+      <div id="print-meta-period">Periode: Nov 2026 (Bulan Ini)</div>
+      <div id="print-meta-role">Akses: Direksi / Owner</div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOP EXECUTIVE CONTROL BAR & RBAC (HAK AKSES BERTINGKAT)               -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 glossy-glass border-b border-white/15 no-print">
+    <div class="max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- LEFT: Custom SVG Brand Identity matching Reference Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('executive')">
+        <!-- Frosted Glossy Glass Rounded Rectangle Frame with Top-Left Blue Rim Highlight -->
+        <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
+             style="background: linear-gradient(140deg, rgba(37,99,235,0.28) 0%, rgba(15,23,42,0.82) 55%, rgba(249,115,22,0.24) 100%);
+                    border: 1px solid rgba(255,255,255,0.22);
+                    border-top: 1.5px solid rgba(96,165,250,0.75);
+                    border-left: 1.5px solid rgba(96,165,250,0.65);
+                    box-shadow: 0 8px 22px rgba(29,78,216,0.42), inset 0 1px 1px rgba(255,255,255,0.45);">
+          <span class="absolute -bottom-2 -left-2 w-6 h-6 rounded-full bg-orange-500/45 blur-md"></span>
+          <span class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-blue-500/55 blur-md"></span>
+
+          <!-- Precision SVG Logo: 3D Royal-Blue 'E' + Orange-Gold Orbital Swoosh + 3 Floating Pixels -->
+          <svg class="w-9 h-9 sm:w-10 sm:h-10 relative z-10 drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="eraBlueMain" x1="22" y1="18" x2="68" y2="82" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="48%" stop-color="#2563eb"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+              <linearGradient id="eraBlueDepth" x1="24" y1="28" x2="60" y2="78" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#1e40af"/>
+                <stop offset="100%" stop-color="#172554"/>
+              </linearGradient>
+              <linearGradient id="eraSwooshGold" x1="12" y1="76" x2="84" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ea580c"/>
+                <stop offset="50%" stop-color="#f97316"/>
+                <stop offset="100%" stop-color="#fbbf24"/>
+              </linearGradient>
+              <linearGradient id="pixelRoyal" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+            </defs>
+
+            <!-- 3D Extruded Back Layer of Geometric 'E' -->
+            <path d="M35 32 C35 25 40 21 48 21 H70 L66 32 H46 C43 32 41 34 41 37 V43 H63 L59 53 H41 V64 C41 67 43 69 46 69 H68 L64 80 H43 C34 80 29 75 29 66 V40 C29 35 31 32 35 32 Z"
+                  fill="url(#eraBlueDepth)" transform="translate(-3.5, 2.5)"/>
+
+            <!-- Front 3D Royal-Blue Stylized Geometric 'E' (#1d4ed8 -> #2563eb) -->
+            <path d="M36 29 C36 22 42 18 51 18 H73 L68 30 H48 C44 30 42 32 42 36 V42 H65 L60 53 H42 V64 C42 68 44 70 48 70 H70 L65 81 H44 C35 81 30 75 30 65 V38 C30 32 32 29 36 29 Z"
+                  fill="url(#eraBlueMain)"/>
+
+            <!-- Specular Top-Left Rim Highlight on 'E' -->
+            <path d="M37 28 C37 22.5 42.5 19 51 19 H71.5 L70.5 21.5 H50.5 C43 21.5 39 24.5 39 30"
+                  stroke="rgba(255,255,255,0.62)" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Vibrant Orange-Gold Orbital Swoosh (#f97316 -> #fbbf24) -->
+            <path d="M68 31 C83 34 86 47 71 61 C55 76 26 83 15 74 C8 68 14 55 31 45 C20 54 17 63 23 67 C32 73 55 66 68 53 C78 43 76 35 68 31 Z"
+                  fill="url(#eraSwooshGold)"/>
+
+            <!-- 3 Floating Square Pixel Blocks at Top-Right Corner (2 Royal Blue + 1 Bright Orange) -->
+            <rect x="74" y="16" width="9" height="8" rx="1.6" transform="skewX(-12)" fill="url(#pixelRoyal)"/>
+            <rect x="86" y="11" width="8.5" height="7.5" rx="1.5" transform="skewX(-12)" fill="url(#eraSwooshGold)"/>
+            <rect x="83" y="21" width="7.5" height="6.8" rx="1.4" transform="skewX(-12)" fill="url(#pixelRoyal)"/>
+          </svg>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold tracking-tight text-lg sm:text-xl text-white">
+              eracom<span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">.id</span>
+            </span>
+            <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-600/25 text-sky-300 border border-sky-400/35">
+              ERA Analytics &amp; Dashboard Keuangan
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-none mt-0.5">Executive Financial Intelligence • Real-Time P&amp;L, Cash Flow &amp; Balance Sheet</p>
+        </div>
+      </div>
+
+      <!-- CENTER/RIGHT: Executive Filters, RBAC Switcher & Quick Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full xl:w-auto justify-between xl:justify-end">
+        
+        <!-- 1. Unit Bisnis / Cabang Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-950/80 border border-white/15 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <svg class="w-3.5 h-3.5 text-sky-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <select id="filter-unit" onchange="handleUnitChange(this.value)" class="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer">
+            <option value="ALL" class="bg-slate-950">Semua Unit (Konsolidasi)</option>
+            <option value="JKT" class="bg-slate-950">Cabang Jakarta (Kuningan)</option>
+            <option value="SKB" class="bg-slate-950">Cabang Sukabumi</option>
+            <option value="FNB" class="bg-slate-950">Unit Retail &amp; F&amp;B</option>
+          </select>
+        </div>
+
+        <!-- 2. Periode Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-950/80 border border-white/15 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <svg class="w-3.5 h-3.5 text-orange-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <select id="filter-period" onchange="handlePeriodChange(this.value)" class="bg-transparent text-xs font-bold text-amber-300 focus:outline-none cursor-pointer">
+            <option value="NOV26" class="bg-slate-950">Nov 2026 (Bulan Ini)</option>
+            <option value="OCT26" class="bg-slate-950">Okt 2026</option>
+            <option value="Q426" class="bg-slate-950">Q4 2026</option>
+            <option value="YTD26" class="bg-slate-950">YTD 2026</option>
+          </select>
+        </div>
+
+        <!-- 3. Hak Akses Bertingkat (RBAC Role Switcher) -->
+        <div class="flex items-center gap-1.5 bg-slate-950/80 border border-amber-400/35 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <select id="filter-role" onchange="handleRoleChange(this.value)" class="bg-transparent text-xs font-extrabold text-sky-300 focus:outline-none cursor-pointer">
+            <option value="DIREKSI" class="bg-slate-950">Direksi / Owner</option>
+            <option value="FINANCE" class="bg-slate-950">Manajer Keuangan</option>
+            <option value="BRANCH" class="bg-slate-950">Kepala Cabang</option>
+          </select>
+        </div>
+
+        <!-- 4. Quick Action Buttons -->
+        <div class="flex items-center gap-1.5">
+          <button id="btn-quick-tx" onclick="openTxModal()" class="px-3 py-2 rounded-xl btn-glossy-orange text-xs font-extrabold flex items-center gap-1.5 whitespace-nowrap">
+            <span>+ Transaksi Harian</span>
+          </button>
+          <button id="btn-quick-excel" onclick="exportFinancialCSV('statements')" class="px-3 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-400/40 text-white text-xs font-extrabold flex items-center gap-1 transition shadow-lg">
+            <span>Ekspor Excel</span>
+          </button>
+          <button id="btn-quick-pdf" onclick="triggerExecutivePDF()" class="px-3 py-2 rounded-xl btn-glossy-blue text-white text-xs font-extrabold flex items-center gap-1">
+            <span>Ekspor PDF</span>
+          </button>
+          <button onclick="resetDemoFinancials()" title="Reset Data Demo" class="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/15 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Role Context Banner (Informs user of active RBAC permissions) -->
+    <div id="rbac-status-bar" class="bg-slate-950/75 border-t border-white/10 px-4 py-1.5 text-[11px] flex flex-wrap items-center justify-between gap-2 max-w-[1440px] mx-auto">
+      <div class="flex items-center gap-2">
+        <span id="rbac-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="rbac-banner-text" class="text-slate-300 font-medium">Akses Penuh Direksi / Owner: Seluruh unit konsolidasi, rincian HPP &amp; margin rahasia, input transaksi, serta ekspor Excel/PDF aktif.</span>
+      </div>
+      <span class="font-mono text-slate-400 hidden sm:inline">Sinkronisasi Buku Besar: <strong class="text-sky-400">LIVE</strong></span>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 4 CORE MODULE NAVIGATION TABS                                         -->
+  <!-- ===================================================================== -->
+  <div class="max-w-[1440px] w-full mx-auto px-3 sm:px-6 pt-4 no-print">
+    <nav class="glossy-glass p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab('executive')" id="tab-executive" class="nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+        <span>1. Dashboard Eksekutif</span>
+      </button>
+      <button onclick="switchTab('statements')" id="tab-statements" class="nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>2. Laba Rugi, Arus Kas &amp; Neraca</span>
+      </button>
+      <button onclick="switchTab('margins')" id="tab-margins" class="nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+        <span>3. Analisis Margin Produk &amp; Cabang</span>
+      </button>
+      <button onclick="switchTab('export')" id="tab-export" class="nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>4. Pusat Ekspor &amp; Audit Akses</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODULE 1: DASHBOARD EKSEKUTIF (EXECUTIVE OVERVIEW)                    -->
+  <!-- ===================================================================== -->
+  <main id="view-executive" class="max-w-[1440px] w-full mx-auto px-3 sm:px-6 py-5 space-y-6 flex-1">
+    
+    <!-- 4 Glossy Executive KPI Cards with Trend Badges & Mini SVG Sparklines -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- KPI 1: Total Omzet -->
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Omzet (Pendapatan)</span>
+            <div id="kpi-revenue" class="font-mono text-xl sm:text-2xl font-extrabold text-white mt-1.5">Rp 0</div>
+          </div>
+          <span id="kpi-revenue-trend" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold">+14.2%</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+          <span id="kpi-revenue-sub" class="text-[11px] text-slate-400">vs periode lalu</span>
+          <svg class="w-24 h-7 text-sky-400" viewBox="0 0 100 30" fill="none">
+            <polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="2,24 20,20 38,22 56,14 75,10 98,4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- KPI 2: HPP & Gross Margin % -->
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">HPP &amp; Gross Margin</span>
+            <div id="kpi-cogs" class="font-mono text-xl sm:text-2xl font-extrabold text-sky-300 mt-1.5">Rp 0</div>
+          </div>
+          <span id="kpi-gm-badge" class="px-2.5 py-1 rounded-lg bg-blue-500/20 border border-sky-400/40 text-sky-300 text-xs font-extrabold">GM 62.5%</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+          <span id="kpi-gm-sub" class="text-[11px] text-slate-400">Efisiensi HPP terjaga</span>
+          <svg class="w-24 h-7 text-blue-400" viewBox="0 0 100 30" fill="none">
+            <polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="2,18 22,16 42,19 60,12 80,11 98,7"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- KPI 3: Biaya Operasional (OPEX) -->
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Biaya Operasional (OPEX)</span>
+            <div id="kpi-opex" class="font-mono text-xl sm:text-2xl font-extrabold text-orange-300 mt-1.5">Rp 0</div>
+          </div>
+          <span id="kpi-opex-trend" class="px-2.5 py-1 rounded-lg bg-orange-500/20 border border-orange-400/40 text-amber-300 text-xs font-extrabold">-3.1%</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+          <span id="kpi-opex-ratio" class="text-[11px] text-slate-400">Rasio OPEX: 24.8%</span>
+          <svg class="w-24 h-7 text-orange-400" viewBox="0 0 100 30" fill="none">
+            <polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="2,8 20,12 40,10 60,16 80,18 98,22"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- KPI 4: Laba Bersih (Net Profit) -->
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between border-amber-400/35">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Laba Bersih (Net Profit)</span>
+            <div id="kpi-netprofit" class="font-mono text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400 mt-1.5">Rp 0</div>
+          </div>
+          <span id="kpi-npm-badge" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold">NPM 31.4%</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+          <span id="kpi-netprofit-sub" class="text-[11px] text-emerald-400 font-semibold">+18.6% vs periode lalu</span>
+          <svg class="w-24 h-7 text-amber-400" viewBox="0 0 100 30" fill="none">
+            <polyline fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="2,26 20,21 40,17 60,13 80,8 98,3"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Charts Row: Combo Cash Flow/Profit Trend + Revenue & OPEX Composition -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Chart 1: Arus Kas Masuk vs Keluar & Tren Laba Bersih (6 Bulan Terakhir) -->
+      <div class="glossy-glass rounded-3xl p-5 lg:col-span-2 flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-400">Cash Flow &amp; Profitability Trend</span>
+            <h2 class="text-base sm:text-lg font-extrabold text-white">Arus Kas Masuk vs Keluar &amp; Tren Laba Bersih (6 Bulan)</h2>
+          </div>
+          <div class="flex items-center gap-3 text-[11px] font-bold">
+            <span class="flex items-center gap-1.5 text-sky-300"><span class="w-2.5 h-2.5 rounded-sm bg-blue-500"></span> Kas Masuk</span>
+            <span class="flex items-center gap-1.5 text-orange-300"><span class="w-2.5 h-2.5 rounded-sm bg-orange-500"></span> Kas Keluar</span>
+            <span class="flex items-center gap-1.5 text-amber-300"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Laba Bersih</span>
+          </div>
+        </div>
+        <div class="relative h-72 w-full">
+          <canvas id="chart-cashflow-combo"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Komposisi Pendapatan & Biaya Operasional -->
+      <div class="glossy-glass rounded-3xl p-5 flex flex-col justify-between">
+        <div class="mb-3">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-orange-400">Struktur Biaya &amp; Laba</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Alokasi Omzet &amp; Beban Operasional</h2>
+        </div>
+        <div class="relative h-56 w-full flex items-center justify-center">
+          <canvas id="chart-composition-donut"></canvas>
+        </div>
+        <div id="donut-legend-box" class="mt-3 pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Kesehatan Finansial Gauges & Monitoring Piutang Jatuh Tempo (AR Aging) -->
+    <section class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+      
+      <!-- Financial Health & Liquidity Gauges (4 cols) -->
+      <div class="glossy-glass rounded-3xl p-5 xl:col-span-4 space-y-4">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">Financial Health Index</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Indikator Kesehatan Finansial</h2>
+        </div>
+
+        <div class="space-y-4 pt-1">
+          <!-- Gauge 1: Current Ratio -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-slate-300">Rasio Kas &amp; Likuiditas (Current Ratio)</span>
+              <span id="health-current-ratio" class="font-mono font-extrabold text-emerald-400">2.85x</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div id="bar-current-ratio" class="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400" style="width: 82%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">Ideal &gt; 1.50x • Kemampuan bayar kewajiban lancar sangat sehat.</p>
+          </div>
+
+          <!-- Gauge 2: Gross Profit Margin -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-slate-300">Gross Profit Margin (Margin Kotor)</span>
+              <span id="health-gpm" class="font-mono font-extrabold text-sky-400">62.5%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div id="bar-gpm" class="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400" style="width: 62.5%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">Target industri 55% • Kontrol HPP &amp; supplier optimal.</p>
+          </div>
+
+          <!-- Gauge 3: Operating Expense Ratio -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-slate-300">Operating Expense Ratio (OPEX / Omzet)</span>
+              <span id="health-opex-ratio" class="font-mono font-extrabold text-amber-400">24.8%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div id="bar-opex-ratio" class="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-400" style="width: 24.8%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">Batas aman &lt; 35% • Efisiensi biaya operasional terjaga.</p>
+          </div>
+
+          <!-- Gauge 4: Cash Runway -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-slate-300 block">Estimasi Runway Kas Operasional</span>
+              <span class="text-[11px] text-slate-400">Berdasarkan rata-rata burn rate OPEX</span>
+            </div>
+            <span id="health-runway" class="px-3 py-1.5 rounded-xl bg-blue-600/25 border border-sky-400/40 font-mono text-sm font-extrabold text-sky-300">14.2 Bln</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Piutang Jatuh Tempo / AR Aging Table (8 cols) -->
+      <div class="glossy-glass rounded-3xl p-5 xl:col-span-8 flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-orange-400">Accounts Receivable Aging</span>
+            <h2 class="text-base sm:text-lg font-extrabold text-white">Monitoring Piutang Jatuh Tempo</h2>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-400">Total Piutang Aktif:</span>
+            <strong id="total-ar-badge" class="font-mono text-sm font-extrabold text-amber-400">Rp 0</strong>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-950/70 text-slate-300 uppercase text-[10px] tracking-wider border-b border-white/10">
+              <tr>
+                <th class="p-3">Invoice</th>
+                <th class="p-3">Klien / Mitra Bisnis</th>
+                <th class="p-3">Unit Bisnis</th>
+                <th class="p-3">Jatuh Tempo</th>
+                <th class="p-3">Nominal</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="ar-table-tbody" class="divide-y divide-white/10">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODULE 2: LABA RUGI, ARUS KAS & NERACA (AUTOMATED STATEMENTS)         -->
+  <!-- ===================================================================== -->
+  <main id="view-statements" class="hidden max-w-[1440px] w-full mx-auto px-3 sm:px-6 py-5 space-y-5 flex-1">
+    
+    <!-- Sub-Switcher & Live Ledger Trigger -->
+    <div class="glossy-glass rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 no-print">
+      <div class="flex flex-wrap gap-2">
+        <button onclick="switchStatementSub('pnl')" id="sub-pnl" class="stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition">
+          Laporan Laba Rugi (P&amp;L)
+        </button>
+        <button onclick="switchStatementSub('cf')" id="sub-cf" class="stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition">
+          Laporan Arus Kas (Cash Flow)
+        </button>
+        <button onclick="switchStatementSub('bs')" id="sub-bs" class="stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition">
+          Neraca Keuangan (Balance Sheet)
+        </button>
+        <button onclick="switchStatementSub('ledger')" id="sub-ledger" class="stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition">
+          Buku Besar Transaksi Harian
+        </button>
+      </div>
+      <button id="btn-stmt-add-tx" onclick="openTxModal()" class="px-4 py-2 rounded-xl btn-glossy-orange text-xs font-extrabold">
+        + Input Transaksi Harian
+      </button>
+    </div>
+
+    <!-- STATEMENT A: LAPORAN LABA RUGI KOMPARATIF (PROFIT & LOSS) -->
+    <section id="stmt-sec-pnl" class="glossy-glass rounded-3xl p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400">eracom.id Automated Financial Reporting</span>
+          <h2 class="text-lg sm:text-xl font-extrabold text-white">Laporan Laba Rugi Komparatif (Profit &amp; Loss)</h2>
+          <p id="pnl-subtitle" class="text-xs text-slate-400">Unit: Semua Unit (Konsolidasi) • Periode: Nov 2026 vs Okt 2026</p>
+        </div>
+        <span class="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold">
+          ✓ Terhubung Otomatis dari Jurnal Harian
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-950/75 text-slate-300 uppercase text-[11px] tracking-wider border-b border-white/15">
+            <tr>
+              <th class="p-3.5">Pos Akun Laba Rugi</th>
+              <th class="p-3.5 text-right">Periode Berjalan</th>
+              <th class="p-3.5 text-right">Periode Lalu</th>
+              <th class="p-3.5 text-right">Varians (%)</th>
+            </tr>
+          </thead>
+          <tbody id="pnl-tbody" class="divide-y divide-white/10 font-mono">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STATEMENT B: LAPORAN ARUS KAS (CASH FLOW STATEMENT) -->
+    <section id="stmt-sec-cf" class="hidden glossy-glass rounded-3xl p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-orange-400">Direct &amp; Indirect Cash Flow Engine</span>
+          <h2 class="text-lg sm:text-xl font-extrabold text-white">Laporan Arus Kas (Cash Flow Statement)</h2>
+          <p id="cf-subtitle" class="text-xs text-slate-400">Rekonsiliasi Aktivitas Operasi, Investasi &amp; Pendanaan</p>
+        </div>
+        <span class="px-3 py-1 rounded-xl bg-blue-500/20 border border-sky-400/40 text-sky-300 text-xs font-extrabold">
+          ● Sinkron Saldo Kas &amp; Bank
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-950/75 text-slate-300 uppercase text-[11px] tracking-wider border-b border-white/15">
+            <tr>
+              <th class="p-3.5">Keterangan Aktivitas Arus Kas</th>
+              <th class="p-3.5 text-right">Nominal (Rp)</th>
+            </tr>
+          </thead>
+          <tbody id="cf-tbody" class="divide-y divide-white/10 font-mono">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STATEMENT C: NERACA KEUANGAN (BALANCE SHEET) -->
+    <section id="stmt-sec-bs" class="hidden glossy-glass rounded-3xl p-5 sm:p-6 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400">Double-Entry Balance Verification</span>
+          <h2 class="text-lg sm:text-xl font-extrabold text-white">Neraca Keuangan (Balance Sheet)</h2>
+          <p id="bs-subtitle" class="text-xs text-slate-400">Posisi Aset = Liabilitas + Ekuitas per Akhir Periode</p>
+        </div>
+        <div id="bs-balance-badge" class="px-4 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-xs font-extrabold shadow-lg">
+          ✓ SEIMBANG (BALANCED)
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Side: ASET -->
+        <div class="bg-slate-950/70 border border-white/10 rounded-2xl p-4 space-y-3">
+          <h3 class="font-extrabold text-sm uppercase tracking-wider text-sky-300 border-b border-white/10 pb-2">Aktiva (Aset)</h3>
+          <div id="bs-assets-box" class="space-y-2 text-xs sm:text-sm font-mono">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Right Side: LIABILITAS & EKUITAS -->
+        <div class="bg-slate-950/70 border border-white/10 rounded-2xl p-4 space-y-3">
+          <h3 class="font-extrabold text-sm uppercase tracking-wider text-amber-300 border-b border-white/10 pb-2">Pasiva (Liabilitas &amp; Ekuitas)</h3>
+          <div id="bs-liab-eq-box" class="space-y-2 text-xs sm:text-sm font-mono">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATEMENT D: BUKU BESAR TRANSAKSI HARIAN -->
+    <section id="stmt-sec-ledger" class="hidden glossy-glass rounded-3xl p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-white">Jurnal Transaksi Harian Terintegrasi</h2>
+          <p class="text-xs text-slate-400">Setiap transaksi yang ditambahkan langsung memperbarui KPI, Laba Rugi, Arus Kas, dan Neraca.</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-950/75 text-slate-300 uppercase text-[10px] tracking-wider border-b border-white/10">
+            <tr>
+              <th class="p-3">Tanggal &amp; ID</th>
+              <th class="p-3">Unit Bisnis</th>
+              <th class="p-3">Kategori Akun</th>
+              <th class="p-3">Deskripsi Transaksi</th>
+              <th class="p-3 text-right">Nominal (Rp)</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-tbody" class="divide-y divide-white/10">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODULE 3: ANALISIS MARGIN PRODUK & CABANG                             -->
+  <!-- ===================================================================== -->
+  <main id="view-margins" class="hidden max-w-[1440px] w-full mx-auto px-3 sm:px-6 py-5 space-y-6 flex-1">
+    
+    <!-- Branch Comparison Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4" id="branch-cards-grid">
+      <!-- Populated via JS -->
+    </section>
+
+    <!-- Contribution Margin Bar Chart -->
+    <section class="glossy-glass rounded-3xl p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Product &amp; Category Contribution</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Perbandingan Omzet vs HPP vs Kontribusi Margin</h2>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="margin-cat-filters">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+      <div class="relative h-72 w-full">
+        <canvas id="chart-margin-bars"></canvas>
+      </div>
+    </section>
+
+    <!-- Detailed Margin Table per Produk & Cabang -->
+    <section class="glossy-glass rounded-3xl p-5 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Rincian Kontribusi Margin per Produk &amp; Unit Operasional</h2>
+          <p class="text-xs text-slate-400">Identifikasi produk unggulan (Star) dan item dengan tekanan biaya HPP.</p>
+        </div>
+        <button onclick="exportFinancialCSV('margins')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition">
+          Unduh Tabel Margin (.csv)
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-950/75 text-slate-300 uppercase text-[10px] tracking-wider border-b border-white/10">
+            <tr>
+              <th class="p-3.5">Produk / Layanan</th>
+              <th class="p-3.5">Kategori</th>
+              <th class="p-3.5">Cabang</th>
+              <th class="p-3.5 text-right">Terjual</th>
+              <th class="p-3.5 text-right">Harga Jual</th>
+              <th class="p-3.5 text-right">HPP / Unit</th>
+              <th class="p-3.5 text-right">Total Omzet</th>
+              <th class="p-3.5 text-right">Kontribusi Margin</th>
+              <th class="p-3.5 text-right">Margin %</th>
+              <th class="p-3.5 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="margins-tbody" class="divide-y divide-white/10">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODULE 4: PUSAT EKSPOR & AUDIT HAK AKSES (EXPORT & RBAC CENTER)       -->
+  <!-- ===================================================================== -->
+  <main id="view-export" class="hidden max-w-[1440px] w-full mx-auto px-3 sm:px-6 py-5 space-y-6 flex-1">
+    
+    <!-- 1-Click Executive Export Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between space-y-4">
+        <div class="space-y-2">
+          <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-extrabold uppercase">Excel / CSV UTF-8 BOM</span>
+          <h3 class="text-lg font-extrabold text-white">Laporan Laba Rugi, Arus Kas &amp; Neraca</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Unduh paket lengkap laporan keuangan terstruktur siap buka di Microsoft Excel maupun Google Sheets sesuai filter unit dan periode aktif.</p>
+        </div>
+        <button id="card-btn-export-stmt" onclick="exportFinancialCSV('statements')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition shadow-lg">
+          Unduh Laporan Keuangan (.csv)
+        </button>
+      </div>
+
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between space-y-4">
+        <div class="space-y-2">
+          <span class="px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase">Excel / Margin Matrix</span>
+          <h3 class="text-lg font-extrabold text-white">Analisis Kontribusi Margin Produk &amp; Cabang</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Ekspor matriks profitabilitas per SKU produk, HPP satuan, kontribusi margin bersih, serta performa per cabang operasional.</p>
+        </div>
+        <button id="card-btn-export-margin" onclick="exportFinancialCSV('margins')" class="w-full py-3 rounded-xl btn-glossy-orange text-xs font-extrabold">
+          Unduh Analisis Margin (.csv)
+        </button>
+      </div>
+
+      <div class="glossy-card glossy-sheen rounded-3xl p-5 flex flex-col justify-between space-y-4">
+        <div class="space-y-2">
+          <span class="px-2.5 py-0.5 rounded-md bg-blue-500/20 border border-sky-400/40 text-sky-300 text-[10px] font-extrabold uppercase">Executive Board PDF</span>
+          <h3 class="text-lg font-extrabold text-white">Cetak / Simpan Laporan Eksekutif PDF</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Menghasilkan dokumen laporan direksi berformat bersih (light-mode print stylesheet) lengkap dengan kop resmi eracom.id dan stempel hak akses.</p>
+        </div>
+        <button id="card-btn-export-pdf" onclick="triggerExecutivePDF()" class="w-full py-3 rounded-xl btn-glossy-blue text-white text-xs font-extrabold">
+          Cetak / Simpan PDF Eksekutif
+        </button>
+      </div>
+    </section>
+
+    <!-- RBAC Permission Matrix Table -->
+    <section class="glossy-glass rounded-3xl p-5 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-3">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-400">Role-Based Access Control (RBAC)</span>
+          <h2 class="text-lg font-extrabold text-white">Matriks Hak Akses Bertingkat &amp; Keamanan Data Finansial</h2>
+        </div>
+        <span class="text-xs text-slate-300">Peran Aktif Saat Ini: <strong id="matrix-active-role" class="text-amber-400">Direksi / Owner</strong></span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-950/75 text-slate-300 uppercase text-[11px] tracking-wider border-b border-white/10">
+            <tr>
+              <th class="p-3.5">Modul &amp; Kewenangan Sistem</th>
+              <th class="p-3.5 text-center">Direksi / Owner</th>
+              <th class="p-3.5 text-center">Manajer Keuangan</th>
+              <th class="p-3.5 text-center">Kepala Cabang</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/10">
+            <tr>
+              <td class="p-3.5 font-semibold text-white">Konsolidasi Seluruh Unit Bisnis &amp; Cabang</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Akses Penuh</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Akses Penuh</td>
+              <td class="p-3.5 text-center text-amber-400 font-bold">Terkunci Cabang Sendiri</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-semibold text-white">Laporan Laba Rugi, Arus Kas &amp; Neraca</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Lengkap</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Lengkap</td>
+              <td class="p-3.5 text-center text-rose-400 font-bold">✕ Terbatas (Omzet &amp; OPEX)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-semibold text-white">Rincian HPP &amp; Margin Rahasia per Produk</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Terbuka</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Terbuka</td>
+              <td class="p-3.5 text-center text-rose-400 font-bold">✕ Disembunyikan (Masked)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-semibold text-white">Input Transaksi Harian &amp; Pelunasan Piutang</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Diizinkan</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Diizinkan</td>
+              <td class="p-3.5 text-center text-rose-400 font-bold">✕ Read-Only</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-semibold text-white">Ekspor Laporan Excel (.csv) &amp; PDF Eksekutif</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Semua Format</td>
+              <td class="p-3.5 text-center text-emerald-400 font-extrabold">✓ Semua Format</td>
+              <td class="p-3.5 text-center text-amber-400 font-bold">Hanya PDF Cabang</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: INPUT TRANSAKSI HARIAN (LIVE AUTO-UPDATE ENGINE)               -->
+  <!-- ===================================================================== -->
+  <div id="tx-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 no-print">
+    <div class="glossy-glass w-full max-w-md rounded-3xl p-5 sm:p-6 space-y-4 border border-white/20 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">Live Ledger Entry</span>
+          <h3 class="font-extrabold text-base sm:text-lg text-white">Input Transaksi Keuangan Harian</h3>
+        </div>
+        <button onclick="closeTxModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="submitDailyTransaction(event)" class="space-y-3.5 text-xs sm:text-sm">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Unit Bisnis / Cabang</label>
+          <select id="tx-unit" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/85 border border-white/15 text-white font-semibold focus:outline-none focus:border-sky-400">
+            <option value="JKT">Cabang Jakarta (Kuningan)</option>
+            <option value="SKB">Cabang Sukabumi</option>
+            <option value="FNB">Unit Retail &amp; F&amp;B</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Jenis Pos Akuntansi</label>
+          <select id="tx-type" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/85 border border-white/15 text-white font-semibold focus:outline-none focus:border-sky-400">
+            <option value="REVENUE">Pendapatan Usaha (Kas Masuk &amp; Omzet +)</option>
+            <option value="COGS">Harga Pokok Penjualan / HPP (Kas Keluar &amp; HPP +)</option>
+            <option value="OPEX">Biaya Operasional / OPEX (Kas Keluar &amp; OPEX +)</option>
+            <option value="AR_NEW">Penjualan Kredit / Piutang Baru (Omzet &amp; Piutang +)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Deskripsi Transaksi</label>
+          <input type="text" id="tx-desc" required placeholder="Mis. Penjualan Paket Enterprise / Pembelian Bahan Baku" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/85 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Nominal (Rp)</label>
+          <input type="number" id="tx-amount" required min="1000" step="1000" placeholder="Mis. 25000000" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/85 border border-white/15 text-amber-400 font-mono font-extrabold placeholder-slate-500 focus:outline-none focus:border-sky-400" />
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeTxModal()" class="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl btn-glossy-orange font-extrabold">Simpan &amp; Sinkronkan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT ENGINE: DATA MODEL, RBAC, CHARTS & AUTO-STATEMENTS         -->
+  <!-- ===================================================================== -->
+  <script>
+    const STORAGE_KEY = 'eracom_analytics_fin_v1';
+
+    const UNIT_LABELS = {
+      ALL: 'Semua Unit (Konsolidasi)',
+      JKT: 'Cabang Jakarta (Kuningan)',
+      SKB: 'Cabang Sukabumi',
+      FNB: 'Unit Retail & F&B'
+    };
+
+    const PERIOD_LABELS = {
+      NOV26: 'Nov 2026 (Bulan Ini)',
+      OCT26: 'Okt 2026',
+      Q426: 'Q4 2026',
+      YTD26: 'YTD 2026'
+    };
+
+    const PERIOD_MULTIPLIER = {
+      NOV26: 1.0,
+      OCT26: 0.89,
+      Q426: 2.82,
+      YTD26: 10.45
+    };
+
+    const ROLE_LABELS = {
+      DIREKSI: 'Direksi / Owner',
+      FINANCE: 'Manajer Keuangan',
+      BRANCH: 'Kepala Cabang'
+    };
+
+    // Baseline Unit Financials (Nov 2026 in Rupiah)
+    const INITIAL_STATE = {
+      activeTab: 'executive',
+      stmtSub: 'pnl',
+      unit: 'ALL',
+      period: 'NOV26',
+      role: 'DIREKSI',
+      marginCatFilter: 'Semua',
+      baseUnits: {
+        JKT: {
+          name: 'Cabang Jakarta (Kuningan)',
+          revenue: 685000000,
+          prevRevenue: 610000000,
+          cogs: 246600000,
+          opexGaji: 92000000,
+          opexSewa: 35000000,
+          opexMarketing: 24000000,
+          opexUtilitas: 14500000,
+          cash: 890000000,
+          ar: 185000000,
+          inventory: 140000000,
+          fixedAssets: 1250000000,
+          shortTermLiab: 215000000,
+          paidInCapital: 1600000000,
+          retainedEarnings: 650000000
+        },
+        SKB: {
+          name: 'Cabang Sukabumi',
+          revenue: 342000000,
+          prevRevenue: 298000000,
+          cogs: 129960000,
+          opexGaji: 48000000,
+          opexSewa: 16000000,
+          opexMarketing: 11500000,
+          opexUtilitas: 8200000,
+          cash: 420000000,
+          ar: 78000000,
+          inventory: 85000000,
+          fixedAssets: 680000000,
+          shortTermLiab: 98000000,
+          paidInCapital: 820000000,
+          retainedEarnings: 345000000
+        },
+        FNB: {
+          name: 'Unit Retail & F&B',
+          revenue: 258000000,
+          prevRevenue: 224000000,
+          cogs: 98040000,
+          opexGaji: 39000000,
+          opexSewa: 18500000,
+          opexMarketing: 9800000,
+          opexUtilitas: 9400000,
+          cash: 310000000,
+          ar: 42000000,
+          inventory: 64000000,
+          fixedAssets: 490000000,
+          shortTermLiab: 76000000,
+          paidInCapital: 610000000,
+          retainedEarnings: 220000000
+        }
+      },
+      receivables: [
+        { id: 'INV-2026-881', client: 'PT Nusantara Digital Solusi', unit: 'JKT', due: '26 Nov 2026', amount: 85000000, status: 'Jatuh Tempo < 7 Hari', paid: false },
+        { id: 'INV-2026-884', client: 'CV Sinar Abadi Logistik', unit: 'SKB', due: '18 Nov 2026', amount: 46000000, status: 'Overdue', paid: false },
+        { id: 'INV-2026-889', client: 'PT Mega Retail Indonesia', unit: 'JKT', due: '08 Des 2026', amount: 100000000, status: 'Lancar', paid: false },
+        { id: 'INV-2026-892', client: 'Koperasi Mitra Sejahtera', unit: 'FNB', due: '25 Nov 2026', amount: 42000000, status: 'Jatuh Tempo < 7 Hari', paid: false },
+        { id: 'INV-2026-895', client: 'Hotel Pangrango Resort', unit: 'SKB', due: '12 Des 2026', amount: 32000000, status: 'Lancar', paid: false }
+      ],
+      products: [
+        { id: 'p1', name: 'ERP Cloud Enterprise Suite', category: 'Layanan & Konsultasi', unit: 'JKT', sold: 18, price: 24500000, cogsUnit: 6800000 },
+        { id: 'p2', name: 'POS Smart Terminal Bundle', category: 'Produk Retail', unit: 'JKT', sold: 42, price: 5800000, cogsUnit: 2950000 },
+        { id: 'p3', name: 'Implementasi Jaringan & Server', category: 'Layanan & Konsultasi', unit: 'SKB', sold: 14, price: 16500000, cogsUnit: 5900000 },
+        { id: 'p4', name: 'Hardware Kasir & Printer Thermal', category: 'Produk Retail', unit: 'SKB', sold: 35, price: 3150000, cogsUnit: 1750000 },
+        { id: 'p5', name: 'Paket Signature Bistro & Kopi Aren', category: 'F&B / Paket', unit: 'FNB', sold: 1840, price: 78000, cogsUnit: 26500 },
+        { id: 'p6', name: 'Catering Corporate Box eracom', category: 'F&B / Paket', unit: 'FNB', sold: 1290, price: 88000, cogsUnit: 38200 }
+      ],
+      ledger: [
+        { id: 'JRN-9041', date: '23 Nov 2026', unit: 'JKT', type: 'REVENUE', desc: 'Pelunasan Termin Lisensi ERP PT Bintang Timur', amount: 48500000 },
+        { id: 'JRN-9040', date: '22 Nov 2026', unit: 'FNB', type: 'REVENUE', desc: 'Rekap Penjualan Harian QR Self-Order Bistro', amount: 18400000 },
+        { id: 'JRN-9039', date: '21 Nov 2026', unit: 'SKB', type: 'COGS', desc: 'Pengadaan Perangkat Hardware POS Batch #14', amount: 22000000 },
+        { id: 'JRN-9038', date: '20 Nov 2026', unit: 'JKT', type: 'OPEX', desc: 'Biaya Cloud Server & Infrastruktur API Produksi', amount: 12500000 }
+      ]
+    };
+
+    let state = JSON.parse(JSON.stringify(INITIAL_STATE));
+    let comboChartInstance = null;
+    let donutChartInstance = null;
+    let marginChartInstance = null;
+
+    // --- STORAGE HELPERS ---
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { ...JSON.parse(JSON.stringify(INITIAL_STATE)), ...parsed };
+        }
+      } catch (e) {
+        console.warn('Fallback ke state default:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function resetDemoFinancials() {
+      localStorage.removeItem(STORAGE_KEY);
+      state = JSON.parse(JSON.stringify(INITIAL_STATE));
+      saveState();
+      syncControlsFromState();
+      renderAll();
+      showToast('Data demo keuangan eracom.id berhasil dikembalikan ke awal.', 'info');
+    }
+
+    // --- FORMATTING & TOAST ---
+    function formatRp(num, allowMask = false) {
+      if (allowMask && state.role === 'BRANCH') {
+        return 'Rp •••.•••.•••';
+      }
+      const prefix = num < 0 ? '-Rp ' : 'Rp ';
+      return prefix + Math.abs(Math.round(num)).toLocaleString('id-ID');
+    }
+
+    function formatShortRp(num) {
+      const abs = Math.abs(num);
+      const sign = num < 0 ? '-' : '';
+      if (abs >= 1e9) return sign + 'Rp ' + (abs / 1e9).toFixed(2) + ' M';
+      if (abs >= 1e6) return sign + 'Rp ' + (abs / 1e6).toFixed(1) + ' Jt';
+      return sign + 'Rp ' + Math.round(abs).toLocaleString('id-ID');
+    }
+
+    function showToast(msg, type = 'success') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      const colors = {
+        success: 'border-emerald-400 text-white',
+        warning: 'border-orange-400 text-amber-200',
+        info: 'border-sky-400 text-sky-100'
+      };
+      el.className = `glossy-glass ${colors[type] || colors.success} border-l-4 px-4 py-3 rounded-xl shadow-2xl text-xs font-bold transition-all duration-300 pointer-events-auto`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        setTimeout(() => el.remove(), 280);
+      }, 3200);
+    }
+
+    // --- RBAC & FILTER HANDLERS ---
+    function syncControlsFromState() {
+      document.getElementById('filter-unit').value = state.unit;
+      document.getElementById('filter-period').value = state.period;
+      document.getElementById('filter-role').value = state.role;
+      applyRBACConstraints();
+    }
+
+    function handleUnitChange(val) {
+      if (state.role === 'BRANCH' && val !== 'SKB') {
+        showToast('Akses Kepala Cabang terkunci hanya pada Cabang Sukabumi.', 'warning');
+        document.getElementById('filter-unit').value = 'SKB';
+        state.unit = 'SKB';
+        return;
+      }
+      state.unit = val;
+      saveState();
+      renderAll();
+    }
+
+    function handlePeriodChange(val) {
+      state.period = val;
+      saveState();
+      renderAll();
+    }
+
+    function handleRoleChange(role) {
+      state.role = role;
+      if (role === 'BRANCH') {
+        state.unit = 'SKB';
+        document.getElementById('filter-unit').value = 'SKB';
+      }
+      saveState();
+      applyRBACConstraints();
+      renderAll();
+      showToast(`Hak Akses beralih ke: ${ROLE_LABELS[role]}`, 'info');
+    }
+
+    function applyRBACConstraints() {
+      const role = state.role;
+      const unitSelect = document.getElementById('filter-unit');
+      const bannerText = document.getElementById('rbac-banner-text');
+      const dot = document.getElementById('rbac-dot');
+      const btnTx = document.getElementById('btn-quick-tx');
+      const btnExcel = document.getElementById('btn-quick-excel');
+      const btnStmtTx = document.getElementById('btn-stmt-add-tx');
+
+      // Lock unit selector for Kepala Cabang
+      Array.from(unitSelect.options).forEach(opt => {
+        if (role === 'BRANCH') {
+          opt.disabled = opt.value !== 'SKB';
+        } else {
+          opt.disabled = false;
+        }
+      });
+
+      if (role === 'DIREKSI') {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        bannerText.textContent = 'Akses Penuh Direksi / Owner: Seluruh unit konsolidasi, rincian HPP & margin rahasia, input transaksi, serta ekspor Excel/PDF aktif.';
+        btnTx.classList.remove('opacity-40', 'pointer-events-none');
+        btnExcel.classList.remove('opacity-40', 'pointer-events-none');
+        if (btnStmtTx) btnStmtTx.classList.remove('opacity-40', 'pointer-events-none');
+      } else if (role === 'FINANCE') {
+        dot.className = 'w-2 h-2 rounded-full bg-sky-400';
+        bannerText.textContent = 'Akses Manajer Keuangan: Melihat Laba Rugi, Arus Kas, Neraca, dan ekspor Excel/PDF seluruh unit. Pengaturan struktur modal dikunci.';
+        btnTx.classList.remove('opacity-40', 'pointer-events-none');
+        btnExcel.classList.remove('opacity-40', 'pointer-events-none');
+        if (btnStmtTx) btnStmtTx.classList.remove('opacity-40', 'pointer-events-none');
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+        bannerText.textContent = 'Akses Terbatas Kepala Cabang (Sukabumi): Terkunci pada operasional cabang sendiri; HPP bersih, margin rahasia, dan input jurnal disembunyikan.';
+        btnTx.classList.add('opacity-40', 'pointer-events-none');
+        btnExcel.classList.add('opacity-40', 'pointer-events-none');
+        if (btnStmtTx) btnStmtTx.classList.add('opacity-40', 'pointer-events-none');
+      }
+
+      const matrixRoleEl = document.getElementById('matrix-active-role');
+      if (matrixRoleEl) matrixRoleEl.textContent = ROLE_LABELS[role];
+    }
+
+    // --- COMPUTE AGGREGATED FINANCIALS ---
+    function getAggregatedFinancials() {
+      const mult = PERIOD_MULTIPLIER[state.period] || 1.0;
+      const unitKeys = state.unit === 'ALL' ? ['JKT', 'SKB', 'FNB'] : [state.unit];
+
+      let revenue = 0, prevRevenue = 0, cogs = 0;
+      let opexGaji = 0, opexSewa = 0, opexMarketing = 0, opexUtilitas = 0;
+      let cash = 0, ar = 0, inventory = 0, fixedAssets = 0;
+      let shortTermLiab = 0, paidInCapital = 0, retainedEarnings = 0;
+
+      unitKeys.forEach(k => {
+        const u = state.baseUnits[k];
+        revenue += u.revenue * mult;
+        prevRevenue += u.prevRevenue * mult;
+        cogs += u.cogs * mult;
+        opexGaji += u.opexGaji * mult;
+        opexSewa += u.opexSewa * mult;
+        opexMarketing += u.opexMarketing * mult;
+        opexUtilitas += u.opexUtilitas * mult;
+
+        // Balance sheet items are point-in-time
+        cash += u.cash;
+        ar += u.ar;
+        inventory += u.inventory;
+        fixedAssets += u.fixedAssets;
+        shortTermLiab += u.shortTermLiab;
+        paidInCapital += u.paidInCapital;
+        retainedEarnings += u.retainedEarnings;
+      });
+
+      const totalOpex = opexGaji + opexSewa + opexMarketing + opexUtilitas;
+      const grossProfit = revenue - cogs;
+      const grossMarginPct = revenue > 0 ? (grossProfit / revenue) * 100 : 0;
+      const ebitda = grossProfit - totalOpex;
+      const tax = Math.max(0, Math.round(ebitda * 0.11));
+      const netProfit = ebitda - tax;
+      const netMarginPct = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+      const opexRatioPct = revenue > 0 ? (totalOpex / revenue) * 100 : 0;
+
+      // Balance Sheet Totals (Keep Assets = Liabilities + Equity exact)
+      const totalCurrentAssets = cash + ar + inventory;
+      const totalAssets = totalCurrentAssets + fixedAssets;
+      const totalLiabAndEq = shortTermLiab + paidInCapital + retainedEarnings;
+      const currentRatio = shortTermLiab > 0 ? totalCurrentAssets / shortTermLiab : 2.5;
+      const monthlyBurn = totalOpex / mult;
+      const runwayMonths = monthlyBurn > 0 ? cash / monthlyBurn : 12;
+
+      return {
+        revenue, prevRevenue, cogs, grossProfit, grossMarginPct,
+        opexGaji, opexSewa, opexMarketing, opexUtilitas, totalOpex, opexRatioPct,
+        ebitda, tax, netProfit, netMarginPct,
+        cash, ar, inventory, totalCurrentAssets, fixedAssets, totalAssets,
+        shortTermLiab, paidInCapital, retainedEarnings, totalLiabAndEq,
+        currentRatio, runwayMonths
+      };
+    }
+
+    // --- NAVIGATION TABS ---
+    function switchTab(tab) {
+      state.activeTab = tab;
+      saveState();
+
+      ['executive', 'statements', 'margins', 'export'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          view.classList.remove('hidden');
+          btn.className = 'nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition flex items-center gap-2 btn-glossy-blue text-white';
+        } else {
+          view.classList.add('hidden');
+          btn.className = 'nav-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5';
+        }
+      });
+
+      renderAll();
+    }
+
+    function switchStatementSub(sub) {
+      state.stmtSub = sub;
+      ['pnl', 'cf', 'bs', 'ledger'].forEach(s => {
+        const sec = document.getElementById(`stmt-sec-${s}`);
+        const btn = document.getElementById(`sub-${s}`);
+        if (s === sub) {
+          sec.classList.remove('hidden');
+          btn.className = 'stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold btn-glossy-orange transition';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'stmt-sub-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10 transition';
+        }
+      });
+      renderStatementsModule();
+    }
+
+    // --- RENDER MODULE 1: EXECUTIVE DASHBOARD ---
+    function renderExecutiveModule() {
+      const f = getAggregatedFinancials();
+      const isBranch = state.role === 'BRANCH';
+
+      // KPI Cards
+      document.getElementById('kpi-revenue').textContent = formatRp(f.revenue, false);
+      const revGrowth = f.prevRevenue > 0 ? (((f.revenue - f.prevRevenue) / f.prevRevenue) * 100).toFixed(1) : '0.0';
+      document.getElementById('kpi-revenue-trend').textContent = (revGrowth >= 0 ? '+' : '') + revGrowth + '%';
+      document.getElementById('kpi-revenue-sub').textContent = `${UNIT_LABELS[state.unit]} • ${PERIOD_LABELS[state.period]}`;
+
+      document.getElementById('kpi-cogs').textContent = formatRp(f.cogs, true);
+      document.getElementById('kpi-gm-badge').textContent = isBranch ? 'GM ••.%' : `GM ${f.grossMarginPct.toFixed(1)}%`;
+      document.getElementById('kpi-gm-sub').textContent = isBranch ? 'Dilindungi Kebijakan RBAC' : `Laba Kotor: ${formatShortRp(f.grossProfit)}`;
+
+      document.getElementById('kpi-opex').textContent = formatRp(f.totalOpex, false);
+      document.getElementById('kpi-opex-ratio').textContent = `Rasio OPEX: ${f.opexRatioPct.toFixed(1)}% dari Omzet`;
+
+      document.getElementById('kpi-netprofit').textContent = formatRp(f.netProfit, true);
+      document.getElementById('kpi-npm-badge').textContent = isBranch ? 'NPM ••.%' : `NPM ${f.netMarginPct.toFixed(1)}%`;
+      document.getElementById('kpi-netprofit-sub').textContent = isBranch ? 'Akses Terbatas Kepala Cabang' : `EBITDA: ${formatShortRp(f.ebitda)}`;
+
+      // Health Gauges
+      document.getElementById('health-current-ratio').textContent = f.currentRatio.toFixed(2) + 'x';
+      document.getElementById('bar-current-ratio').style.width = Math.min(100, (f.currentRatio / 3.5) * 100) + '%';
+
+      document.getElementById('health-gpm').textContent = isBranch ? '••.%' : f.grossMarginPct.toFixed(1) + '%';
+      document.getElementById('bar-gpm').style.width = isBranch ? '50%' : Math.min(100, f.grossMarginPct) + '%';
+
+      document.getElementById('health-opex-ratio').textContent = f.opexRatioPct.toFixed(1) + '%';
+      document.getElementById('bar-opex-ratio').style.width = Math.min(100, f.opexRatioPct * 2) + '%';
+
+      document.getElementById('health-runway').textContent = f.runwayMonths.toFixed(1) + ' Bln';
+
+      // Render Charts
+      renderExecutiveCharts(f);
+
+      // Render AR Aging Table
+      renderReceivablesTable();
+    }
+
+    function renderExecutiveCharts(f) {
+      const labels6M = ['Jun 2026', 'Jul 2026', 'Agu 2026', 'Sep 2026', 'Okt 2026', 'Nov 2026'];
+      const scale = f.revenue / 1285000000;
+      const cashInData = [980, 1045, 1090, 1150, 1132, Math.round(f.revenue / 1e6)].map((v, i) => i === 5 ? v : Math.round(v * scale));
+      const cashOutData = [640, 675, 690, 720, 710, Math.round((f.cogs + f.totalOpex) / 1e6)].map((v, i) => i === 5 ? v : Math.round(v * scale));
+      const profitData = cashInData.map((cin, idx) => Math.max(40, Math.round((cin - cashOutData[idx]) * 0.89)));
+
+      const ctxCombo = document.getElementById('chart-cashflow-combo').getContext('2d');
+      if (comboChartInstance) comboChartInstance.destroy();
+
+      const gradBlue = ctxCombo.createLinearGradient(0, 0, 0, 280);
+      gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.92)');
+      gradBlue.addColorStop(1, 'rgba(29, 78, 216, 0.25)');
+
+      const gradOrange = ctxCombo.createLinearGradient(0, 0, 0, 280);
+      gradOrange.addColorStop(0, 'rgba(249, 115, 22, 0.88)');
+      gradOrange.addColorStop(1, 'rgba(234, 88, 12, 0.22)');
+
+      comboChartInstance = new Chart(ctxCombo, {
+        type: 'bar',
+        data: {
+          labels: labels6M,
+          datasets: [
+            {
+              label: 'Kas Masuk (Juta Rp)',
+              data: cashInData,
+              backgroundColor: gradBlue,
+              borderColor: '#60a5fa',
+              borderWidth: 1,
+              borderRadius: 8
+            },
+            {
+              label: 'Kas Keluar (Juta Rp)',
+              data: cashOutData,
+              backgroundColor: gradOrange,
+              borderColor: '#fb923c',
+              borderWidth: 1,
+              borderRadius: 8
+            },
+            {
+              type: 'line',
+              label: 'Laba Bersih (Juta Rp)',
+              data: profitData,
+              borderColor: '#fbbf24',
+              backgroundColor: '#fbbf24',
+              borderWidth: 3,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.35
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(7, 12, 24, 0.95)',
+              borderColor: 'rgba(255,255,255,0.2)',
+              borderWidth: 1,
+              callbacks: {
+                label: ctx => `${ctx.dataset.label}: Rp ${ctx.parsed.y.toLocaleString('id-ID')} Jt`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.06)' },
+              ticks: {
+                color: '#94a3b8',
+                font: { size: 11 },
+                callback: v => 'Rp ' + v + ' Jt'
+              }
+            }
+          }
+        }
+      });
+
+      // Donut Composition Chart
+      const ctxDonut = document.getElementById('chart-composition-donut').getContext('2d');
+      if (donutChartInstance) donutChartInstance.destroy();
+
+      const donutItems = [
+        { label: 'HPP Pokok', value: Math.round(f.cogs / 1e6), color: '#2563eb' },
+        { label: 'Gaji & SDM', value: Math.round(f.opexGaji / 1e6), color: '#38bdf8' },
+        { label: 'Sewa & Operasional', value: Math.round((f.opexSewa + f.opexUtilitas) / 1e6), color: '#f97316' },
+        { label: 'Pemasaran', value: Math.round(f.opexMarketing / 1e6), color: '#fb923c' },
+        { label: 'Laba Bersih', value: Math.max(10, Math.round(f.netProfit / 1e6)), color: '#fbbf24' }
+      ];
+
+      donutChartInstance = new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+          labels: donutItems.map(d => d.label),
+          datasets: [{
+            data: donutItems.map(d => d.value),
+            backgroundColor: donutItems.map(d => d.color),
+            borderColor: '#0b1224',
+            borderWidth: 3,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '66%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(7, 12, 24, 0.95)',
+              callbacks: {
+                label: ctx => `${ctx.label}: Rp ${ctx.parsed.toLocaleString('id-ID')} Jt`
+              }
+            }
+          }
+        }
+      });
+
+      document.getElementById('donut-legend-box').innerHTML = donutItems.map(d => `
+        <div class="flex items-center justify-between bg-white/5 px-2.5 py-1.5 rounded-lg">
+          <span class="flex items-center gap-1.5 text-slate-300 truncate">
+            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${d.color}"></span>
+            <span class="truncate">${d.label}</span>
+          </span>
+          <span class="font-mono font-bold text-white ml-1">${d.value} Jt</span>
+        </div>
+      `).join('');
+    }
+
+    function renderReceivablesTable() {
+      const tbody = document.getElementById('ar-table-tbody');
+      const filtered = state.receivables.filter(r => state.unit === 'ALL' || r.unit === state.unit);
+      const unpaidTotal = filtered.filter(r => !r.paid).reduce((s, r) => s + r.amount, 0);
+      document.getElementById('total-ar-badge').textContent = formatRp(unpaidTotal);
+
+      tbody.innerHTML = filtered.map(r => {
+        let statusBadge = '';
+        if (r.paid) {
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-extrabold">✓ Lunas</span>`;
+        } else if (r.status === 'Overdue') {
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-400/40 text-rose-300 text-[10px] font-extrabold">Overdue</span>`;
+        } else if (r.status === 'Jatuh Tempo < 7 Hari') {
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-400/40 text-amber-300 text-[10px] font-extrabold">&lt; 7 Hari</span>`;
+        } else {
+          statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-sky-400/40 text-sky-300 text-[10px] font-extrabold">Lancar</span>`;
+        }
+
+        const canSettle = !r.paid && state.role !== 'BRANCH';
+        return `
+          <tr class="hover:bg-white/5 transition">
+            <td class="p-3 font-mono font-bold text-sky-300">${r.id}</td>
+            <td class="p-3 font-semibold text-white">${r.client}</td>
+            <td class="p-3 text-xs text-slate-300">${UNIT_LABELS[r.unit]}</td>
+            <td class="p-3 font-mono text-xs text-slate-300">${r.due}</td>
+            <td class="p-3 font-mono font-extrabold text-amber-400">${formatRp(r.amount)}</td>
+            <td class="p-3">${statusBadge}</td>
+            <td class="p-3 text-right">
+              ${canSettle ? `
+                <button onclick="settleReceivable('${r.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold transition shadow">
+                  Tandai Lunas
+                </button>
+              ` : r.paid ? `<span class="text-[11px] text-slate-500">Terekonsiliasi</span>` : `<span class="text-[11px] text-slate-500">Read-Only</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function settleReceivable(invId) {
+      if (state.role === 'BRANCH') {
+        showToast('Kepala Cabang tidak memiliki izin pelunasan piutang.', 'warning');
+        return;
+      }
+      const inv = state.receivables.find(r => r.id === invId);
+      if (!inv || inv.paid) return;
+
+      inv.paid = true;
+      inv.status = 'Lunas';
+
+      // Immediately update Cash (+) and Accounts Receivable (-) in unit Balance Sheet
+      const u = state.baseUnits[inv.unit];
+      u.cash += inv.amount;
+      u.ar = Math.max(0, u.ar - inv.amount);
+
+      // Record in daily ledger
+      state.ledger.unshift({
+        id: 'JRN-' + Math.floor(9042 + Math.random() * 900),
+        date: '23 Nov 2026',
+        unit: inv.unit,
+        type: 'AR_PAID',
+        desc: `Pelunasan Piutang ${inv.id} (${inv.client})`,
+        amount: inv.amount
+      });
+
+      saveState();
+      renderAll();
+      showToast(`Invoice ${inv.id} lunas! Saldo Kas bertambah & Piutang berkurang.`, 'success');
+    }
+
+    // --- RENDER MODULE 2: LABA RUGI, ARUS KAS & NERACA ---
+    function renderStatementsModule() {
+      const f = getAggregatedFinancials();
+      const isBranch = state.role === 'BRANCH';
+      const subtitleText = `Unit: ${UNIT_LABELS[state.unit]} • Periode: ${PERIOD_LABELS[state.period]}`;
+
+      document.getElementById('pnl-subtitle').textContent = subtitleText;
+      document.getElementById('cf-subtitle').textContent = subtitleText;
+      document.getElementById('bs-subtitle').textContent = subtitleText;
+
+      // 1. Profit & Loss Table
+      const prevCogs = f.prevRevenue * 0.375;
+      const prevGross = f.prevRevenue - prevCogs;
+      const prevOpex = f.totalOpex * 1.032;
+      const prevEbitda = prevGross - prevOpex;
+      const prevTax = Math.max(0, prevEbitda * 0.11);
+      const prevNet = prevEbitda - prevTax;
+
+      const calcVar = (cur, prv) => prv > 0 ? (((cur - prv) / prv) * 100).toFixed(1) + '%' : '0.0%';
+
+      const pnlRows = [
+        { label: 'Pendapatan Usaha (Omzet Bersih)', cur: f.revenue, prv: f.prevRevenue, bold: true, color: 'text-white' },
+        { label: 'Harga Pokok Penjualan (HPP)', cur: -f.cogs, prv: -prevCogs, mask: true, color: 'text-sky-300' },
+        { label: 'LABA KOTOR (GROSS PROFIT)', cur: f.grossProfit, prv: prevGross, bold: true, mask: true, highlight: 'bg-blue-500/10 text-sky-300' },
+        { label: 'Beban Gaji & Kesejahteraan Karyawan', cur: -f.opexGaji, prv: -f.opexGaji * 1.01, color: 'text-slate-300' },
+        { label: 'Beban Sewa Lokasi & Infrastruktur', cur: -f.opexSewa, prv: -f.opexSewa, color: 'text-slate-300' },
+        { label: 'Beban Pemasaran & Promosi Digital', cur: -f.opexMarketing, prv: -f.opexMarketing * 1.12, color: 'text-slate-300' },
+        { label: 'Beban Utilitas, Listrik & Administrasi', cur: -f.opexUtilitas, prv: -f.opexUtilitas * 1.04, color: 'text-slate-300' },
+        { label: 'Total Biaya Operasional (OPEX)', cur: -f.totalOpex, prv: -prevOpex, bold: true, color: 'text-orange-300' },
+        { label: 'EBITDA (Laba Operasional)', cur: f.ebitda, prv: prevEbitda, bold: true, mask: true, color: 'text-white' },
+        { label: 'Estimasi Pajak Penghasilan (PPh)', cur: -f.tax, prv: -prevTax, mask: true, color: 'text-slate-400' },
+        { label: 'LABA BERSIH PERIODE BERJALAN', cur: f.netProfit, prv: prevNet, bold: true, mask: true, highlight: 'bg-orange-500/15 text-amber-300 text-sm sm:text-base' }
+      ];
+
+      document.getElementById('pnl-tbody').innerHTML = pnlRows.map(r => `
+        <tr class="${r.highlight || 'hover:bg-white/5'}">
+          <td class="p-3.5 font-sans ${r.bold ? 'font-extrabold' : 'font-medium pl-6'} ${r.color || ''}">${r.label}</td>
+          <td class="p-3.5 text-right ${r.bold ? 'font-extrabold' : ''} ${r.color || ''}">${formatRp(r.cur, r.mask)}</td>
+          <td class="p-3.5 text-right text-slate-400">${formatRp(r.prv, r.mask)}</td>
+          <td class="p-3.5 text-right font-bold text-emerald-400">${r.mask && isBranch ? '••.%' : calcVar(Math.abs(r.cur), Math.abs(r.prv))}</td>
+        </tr>
+      `).join('');
+
+      // 2. Cash Flow Statement
+      const opCashIn = f.revenue * 0.94;
+      const opCashOut = -(f.cogs + f.totalOpex + f.tax);
+      const netOpCash = opCashIn + opCashOut;
+      const invCash = -45000000;
+      const finCash = -25000000;
+      const netCashIncrease = netOpCash + invCash + finCash;
+      const beginningCash = f.cash - netCashIncrease;
+
+      const cfRows = [
+        { label: 'ARUS KAS DARI AKTIVITAS OPERASI', header: true },
+        { label: 'Penerimaan Kas dari Pelanggan & Pelunasan Piutang', val: opCashIn },
+        { label: 'Pembayaran Pemasok (HPP), Gaji, Sewa & Pajak', val: opCashOut, mask: true },
+        { label: 'Arus Kas Bersih dari Aktivitas Operasi', val: netOpCash, bold: true, mask: true, bg: 'bg-blue-500/10 text-sky-300' },
+        { label: 'ARUS KAS DARI AKTIVITAS INVESTASI', header: true },
+        { label: 'Belanja Modal Peralatan IT & Renovasi Outlet (CAPEX)', val: invCash },
+        { label: 'ARUS KAS DARI AKTIVITAS PENDANAAN', header: true },
+        { label: 'Pembayaran Angsuran Fasilitas Pembiayaan', val: finCash },
+        { label: 'Kenaikan (Penurunan) Kas Bersih Periode Ini', val: netCashIncrease, bold: true, mask: true, bg: 'bg-white/5 text-white' },
+        { label: 'Saldo Kas & Setara Kas Awal Periode', val: beginningCash, mask: true },
+        { label: 'SALDO KAS & BANK AKHIR PERIODE', val: f.cash, bold: true, bg: 'bg-orange-500/15 text-amber-300 text-sm sm:text-base' }
+      ];
+
+      document.getElementById('cf-tbody').innerHTML = cfRows.map(r => {
+        if (r.header) {
+          return `<tr class="bg-slate-950/60"><td colspan="2" class="p-3 font-sans text-xs font-extrabold tracking-wider text-sky-400">${r.label}</td></tr>`;
+        }
+        return `
+          <tr class="${r.bg || 'hover:bg-white/5'}">
+            <td class="p-3.5 font-sans ${r.bold ? 'font-extrabold' : 'pl-6 text-slate-300'}">${r.label}</td>
+            <td class="p-3.5 text-right ${r.bold ? 'font-extrabold' : ''}">${formatRp(r.val, r.mask)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // 3. Balance Sheet (Neraca)
+      document.getElementById('bs-assets-box').innerHTML = `
+        <div class="flex justify-between py-1.5 text-slate-300"><span>Kas &amp; Setara Kas Bank</span><span class="font-bold text-white">${formatRp(f.cash)}</span></div>
+        <div class="flex justify-between py-1.5 text-slate-300"><span>Piutang Usaha (Accounts Receivable)</span><span class="font-bold text-white">${formatRp(f.ar)}</span></div>
+        <div class="flex justify-between py-1.5 text-slate-300"><span>Persediaan Barang &amp; Bahan Baku</span><span class="font-bold text-white">${formatRp(f.inventory)}</span></div>
+        <div class="flex justify-between py-2 border-y border-white/10 font-extrabold text-sky-300"><span>Total Aset Lancar</span><span>${formatRp(f.totalCurrentAssets)}</span></div>
+        <div class="flex justify-between py-1.5 text-slate-300 pt-2"><span>Aset Tetap (Properti, Peralatan &amp; IT)</span><span class="font-bold text-white">${formatRp(f.fixedAssets)}</span></div>
+        <div class="flex justify-between py-3 px-3 rounded-xl bg-blue-600/20 border border-sky-400/40 font-extrabold text-white text-sm mt-3">
+          <span>TOTAL ASET</span><span>${formatRp(f.totalAssets)}</span>
+        </div>
+      `;
+
+      document.getElementById('bs-liab-eq-box').innerHTML = `
+        <div class="flex justify-between py-1.5 text-slate-300"><span>Utang Usaha &amp; Akrual Jangka Pendek</span><span class="font-bold text-white">${formatRp(f.shortTermLiab)}</span></div>
+        <div class="flex justify-between py-2 border-y border-white/10 font-extrabold text-orange-300"><span>Total Liabilitas</span><span>${formatRp(f.shortTermLiab)}</span></div>
+        <div class="flex justify-between py-1.5 text-slate-300 pt-2"><span>Modal Disetor Pemegang Saham</span><span class="font-bold text-white">${formatRp(f.paidInCapital)}</span></div>
+        <div class="flex justify-between py-1.5 text-slate-300"><span>Laba Ditahan &amp; Akumulasi Tahun Berjalan</span><span class="font-bold text-white">${formatRp(f.retainedEarnings)}</span></div>
+        <div class="flex justify-between py-3 px-3 rounded-xl bg-orange-500/20 border border-amber-400/40 font-extrabold text-amber-300 text-sm mt-3">
+          <span>TOTAL LIABILITAS &amp; EKUITAS</span><span>${formatRp(f.totalLiabAndEq)}</span>
+        </div>
+      `;
+
+      const isBalanced = Math.abs(f.totalAssets - f.totalLiabAndEq) < 10;
+      const badge = document.getElementById('bs-balance-badge');
+      badge.textContent = isBalanced ? '✓ SEIMBANG (BALANCED)' : '⚠ SELISIH REKONSILIASI';
+
+      // 4. Ledger Table
+      const filteredLedger = state.ledger.filter(l => state.unit === 'ALL' || l.unit === state.unit);
+      document.getElementById('ledger-tbody').innerHTML = filteredLedger.map(l => `
+        <tr class="hover:bg-white/5 transition">
+          <td class="p-3 font-mono text-xs text-slate-300"><strong class="text-sky-300">${l.id}</strong> • ${l.date}</td>
+          <td class="p-3 text-xs font-semibold text-white">${UNIT_LABELS[l.unit]}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded bg-white/10 text-[10px] font-extrabold text-amber-300">${l.type}</span></td>
+          <td class="p-3 text-xs text-slate-200">${l.desc}</td>
+          <td class="p-3 text-right font-mono font-extrabold text-white">${formatRp(l.amount)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- DAILY TRANSACTION INPUT MODAL ---
+    function openTxModal() {
+      if (state.role === 'BRANCH') {
+        showToast('Akses Kepala Cabang tidak diizinkan menambah jurnal transaksi.', 'warning');
+        return;
+      }
+      document.getElementById('tx-modal').classList.remove('hidden');
+    }
+
+    function closeTxModal() {
+      document.getElementById('tx-modal').classList.add('hidden');
+    }
+
+    function submitDailyTransaction(e) {
+      e.preventDefault();
+      const unitKey = document.getElementById('tx-unit').value;
+      const txType = document.getElementById('tx-type').value;
+      const desc = document.getElementById('tx-desc').value.trim();
+      const amount = parseInt(document.getElementById('tx-amount').value, 10);
+
+      if (!desc || isNaN(amount) || amount <= 0) return;
+
+      const u = state.baseUnits[unitKey];
+      if (txType === 'REVENUE') {
+        u.revenue += amount;
+        u.cash += amount;
+        u.retainedEarnings += amount;
+      } else if (txType === 'COGS') {
+        u.cogs += amount;
+        u.cash = Math.max(0, u.cash - amount);
+        u.retainedEarnings -= amount;
+      } else if (txType === 'OPEX') {
+        u.opexUtilitas += amount;
+        u.cash = Math.max(0, u.cash - amount);
+        u.retainedEarnings -= amount;
+      } else if (txType === 'AR_NEW') {
+        u.revenue += amount;
+        u.ar += amount;
+        u.retainedEarnings += amount;
+        state.receivables.unshift({
+          id: 'INV-2026-' + Math.floor(900 + Math.random() * 99),
+          client: desc,
+          unit: unitKey,
+          due: '05 Des 2026',
+          amount,
+          status: 'Lancar',
+          paid: false
+        });
+      }
+
+      state.ledger.unshift({
+        id: 'JRN-' + Math.floor(9050 + Math.random() * 900),
+        date: '23 Nov 2026',
+        unit: unitKey,
+        type: txType,
+        desc,
+        amount
+      });
+
+      saveState();
+      closeTxModal();
+      document.getElementById('tx-desc').value = '';
+      document.getElementById('tx-amount').value = '';
+      renderAll();
+      showToast(`Transaksi ${formatRp(amount)} disimpan! KPI, Laba Rugi, Arus Kas & Neraca diperbarui otomatis.`, 'success');
+    }
+
+    // --- RENDER MODULE 3: MARGIN PRODUK & CABANG ---
+    function renderMarginsModule() {
+      const isBranch = state.role === 'BRANCH';
+      const mult = PERIOD_MULTIPLIER[state.period] || 1.0;
+
+      // 1. Branch Comparison Cards
+      const visibleBranches = isBranch ? ['SKB'] : ['JKT', 'SKB', 'FNB'];
+      document.getElementById('branch-cards-grid').innerHTML = visibleBranches.map(k => {
+        const u = state.baseUnits[k];
+        const rev = u.revenue * mult;
+        const totalCost = (u.cogs + u.opexGaji + u.opexSewa + u.opexMarketing + u.opexUtilitas) * mult;
+        const profit = rev - totalCost;
+        const marginPct = rev > 0 ? ((profit / rev) * 100).toFixed(1) : '0.0';
+
+        return `
+          <div class="glossy-card glossy-sheen rounded-3xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-lg bg-blue-500/20 border border-sky-400/35 text-sky-300 text-[10px] font-extrabold uppercase">${k}</span>
+              <span class="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold">
+                ${isBranch ? 'Margin ••.%' : `Net Margin ${marginPct}%`}
+              </span>
+            </div>
+            <h3 class="font-extrabold text-base text-white">${u.name}</h3>
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 text-xs">
+              <div>
+                <span class="text-slate-400 block">Omzet Unit</span>
+                <span class="font-mono font-extrabold text-white">${formatShortRp(rev)}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Laba Kontribusi</span>
+                <span class="font-mono font-extrabold text-amber-400">${isBranch ? 'Rp ••• Jt' : formatShortRp(profit)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Category Filter Pills
+      const cats = ['Semua', 'Layanan & Konsultasi', 'Produk Retail', 'F&B / Paket'];
+      document.getElementById('margin-cat-filters').innerHTML = cats.map(c => `
+        <button onclick="setMarginCatFilter('${c}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${
+          state.marginCatFilter === c ? 'btn-glossy-orange' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+        }">${c}</button>
+      `).join('');
+
+      // 3. Filter Products by Unit, RBAC & Category
+      const filteredProds = state.products.filter(p => {
+        const matchUnit = state.unit === 'ALL' || p.unit === state.unit;
+        const matchCat = state.marginCatFilter === 'Semua' || p.category === state.marginCatFilter;
+        return matchUnit && matchCat;
+      });
+
+      // Render Product Table
+      document.getElementById('margins-tbody').innerHTML = filteredProds.map(p => {
+        const soldQty = Math.round(p.sold * mult);
+        const totalOmzet = soldQty * p.price;
+        const totalCogs = soldQty * p.cogsUnit;
+        const contribMargin = totalOmzet - totalCogs;
+        const marginPct = totalOmzet > 0 ? (contribMargin / totalOmzet) * 100 : 0;
+
+        let perfBadge = '';
+        if (marginPct >= 60) {
+          perfBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-extrabold">★ Star / Unggulan</span>`;
+        } else if (marginPct >= 48) {
+          perfBadge = `<span class="px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-sky-400/40 text-sky-300 text-[10px] font-extrabold">● Stabil</span>`;
+        } else {
+          perfBadge = `<span class="px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-400/40 text-amber-300 text-[10px] font-extrabold">⚠ Perlu Evaluasi</span>`;
+        }
+
+        return `
+          <tr class="hover:bg-white/5 transition">
+            <td class="p-3.5 font-extrabold text-white">${p.name}</td>
+            <td class="p-3.5 text-xs text-slate-300">${p.category}</td>
+            <td class="p-3.5 text-xs text-sky-300 font-semibold">${UNIT_LABELS[p.unit]}</td>
+            <td class="p-3.5 text-right font-mono text-white">${soldQty.toLocaleString('id-ID')}</td>
+            <td class="p-3.5 text-right font-mono text-slate-300">${formatRp(p.price)}</td>
+            <td class="p-3.5 text-right font-mono text-sky-300">${formatRp(p.cogsUnit, true)}</td>
+            <td class="p-3.5 text-right font-mono font-bold text-white">${formatRp(totalOmzet)}</td>
+            <td class="p-3.5 text-right font-mono font-extrabold text-amber-400">${formatRp(contribMargin, true)}</td>
+            <td class="p-3.5 text-right font-mono font-extrabold text-emerald-400">${isBranch ? '••.%' : marginPct.toFixed(1) + '%'}</td>
+            <td class="p-3.5 text-center">${perfBadge}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // 4. Margin Bar Chart
+      const ctxMargin = document.getElementById('chart-margin-bars').getContext('2d');
+      if (marginChartInstance) marginChartInstance.destroy();
+
+      marginChartInstance = new Chart(ctxMargin, {
+        type: 'bar',
+        data: {
+          labels: filteredProds.map(p => p.name.length > 22 ? p.name.slice(0, 22) + '...' : p.name),
+          datasets: [
+            {
+              label: 'Total Omzet (Juta Rp)',
+              data: filteredProds.map(p => Math.round((p.sold * mult * p.price) / 1e6)),
+              backgroundColor: 'rgba(37, 99, 235, 0.85)',
+              borderRadius: 6
+            },
+            {
+              label: isBranch ? 'HPP (Disembunyikan)' : 'HPP Pokok (Juta Rp)',
+              data: filteredProds.map(p => isBranch ? 0 : Math.round((p.sold * mult * p.cogsUnit) / 1e6)),
+              backgroundColor: 'rgba(249, 115, 22, 0.85)',
+              borderRadius: 6
+            },
+            {
+              label: isBranch ? 'Margin (Disembunyikan)' : 'Kontribusi Margin (Juta Rp)',
+              data: filteredProds.map(p => isBranch ? 0 : Math.round((p.sold * mult * (p.price - p.cogsUnit)) / 1e6)),
+              backgroundColor: 'rgba(251, 191, 36, 0.92)',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#cbd5e1', font: { size: 11, weight: 'bold' } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#94a3b8', font: { size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.06)' },
+              ticks: { color: '#94a3b8', callback: v => 'Rp ' + v + ' Jt' }
+            }
+          }
+        }
+      });
+    }
+
+    function setMarginCatFilter(cat) {
+      state.marginCatFilter = cat;
+      renderMarginsModule();
+    }
+
+    // --- EXPORT EXCEL (.CSV UTF-8 BOM) & EXECUTIVE PDF ---
+    function exportFinancialCSV(scope = 'statements') {
+      if (state.role === 'BRANCH') {
+        showToast('Akses Kepala Cabang hanya diizinkan mencetak PDF Cabang.', 'warning');
+        return;
+      }
+
+      const BOM = '\uFEFF';
+      let rows = [];
+      let filename = '';
+
+      if (scope === 'margins') {
+        filename = `eracom_id_Analisis_Margin_${state.unit}_${state.period}.csv`;
+        rows.push(['eracom.id — ERA Analytics & Dashboard Keuangan']);
+        rows.push([`Laporan Kontribusi Margin Produk | Unit: ${UNIT_LABELS[state.unit]} | Periode: ${PERIOD_LABELS[state.period]}`]);
+        rows.push([]);
+        rows.push(['Produk / Layanan', 'Kategori', 'Cabang', 'Unit Terjual', 'Harga Jual (Rp)', 'HPP/Unit (Rp)', 'Total Omzet (Rp)', 'Kontribusi Margin (Rp)', 'Margin (%)']);
+
+        const mult = PERIOD_MULTIPLIER[state.period] || 1.0;
+        state.products
+          .filter(p => state.unit === 'ALL' || p.unit === state.unit)
+          .forEach(p => {
+            const qty = Math.round(p.sold * mult);
+            const omzet = qty * p.price;
+            const margin = omzet - qty * p.cogsUnit;
+            const pct = ((margin / omzet) * 100).toFixed(2) + '%';
+            rows.push([p.name, p.category, UNIT_LABELS[p.unit], qty, p.price, p.cogsUnit, omzet, margin, pct]);
+          });
+      } else {
+        const f = getAggregatedFinancials();
+        filename = `eracom_id_Laporan_Keuangan_${state.unit}_${state.period}.csv`;
+        rows.push(['eracom.id — ERA Analytics & Dashboard Keuangan']);
+        rows.push([`Laporan Laba Rugi & Neraca | Unit: ${UNIT_LABELS[state.unit]} | Periode: ${PERIOD_LABELS[state.period]} | Akses: ${ROLE_LABELS[state.role]}`]);
+        rows.push([]);
+        rows.push(['POS LAPORAN LABA RUGI', 'NOMINAL (RP)']);
+        rows.push(['Pendapatan Usaha (Omzet)', Math.round(f.revenue)]);
+        rows.push(['Harga Pokok Penjualan (HPP)', Math.round(f.cogs)]);
+        rows.push(['Laba Kotor (Gross Profit)', Math.round(f.grossProfit)]);
+        rows.push(['Total Biaya Operasional (OPEX)', Math.round(f.totalOpex)]);
+        rows.push(['EBITDA', Math.round(f.ebitda)]);
+        rows.push(['Estimasi Pajak (PPh)', Math.round(f.tax)]);
+        rows.push(['Laba Bersih (Net Profit)', Math.round(f.netProfit)]);
+        rows.push([]);
+        rows.push(['POS NERACA KEUANGAN', 'NOMINAL (RP)']);
+        rows.push(['Kas & Setara Kas', Math.round(f.cash)]);
+        rows.push(['Piutang Usaha', Math.round(f.ar)]);
+        rows.push(['Persediaan', Math.round(f.inventory)]);
+        rows.push(['Aset Tetap', Math.round(f.fixedAssets)]);
+        rows.push(['TOTAL ASET', Math.round(f.totalAssets)]);
+        rows.push(['Total Liabilitas Jangka Pendek', Math.round(f.shortTermLiab)]);
+        rows.push(['Modal Disetor', Math.round(f.paidInCapital)]);
+        rows.push(['Laba Ditahan', Math.round(f.retainedEarnings)]);
+        rows.push(['TOTAL LIABILITAS & EKUITAS', Math.round(f.totalLiabAndEq)]);
+      }
+
+      const csvString = BOM + rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast(`File Excel/CSV "${filename}" berhasil diunduh!`, 'success');
+    }
+
+    function triggerExecutivePDF() {
+      document.getElementById('print-meta-unit').textContent = `Unit: ${UNIT_LABELS[state.unit]}`;
+      document.getElementById('print-meta-period').textContent = `Periode: ${PERIOD_LABELS[state.period]}`;
+      document.getElementById('print-meta-role').textContent = `Hak Akses: ${ROLE_LABELS[state.role]}`;
+      showToast('Menyiapkan pratinjau cetak PDF Eksekutif eracom.id...', 'info');
+      setTimeout(() => window.print(), 350);
+    }
+
+    // --- MASTER RENDER & INIT ---
+    function renderAll() {
+      applyRBACConstraints();
+      if (state.activeTab === 'executive') renderExecutiveModule();
+      if (state.activeTab === 'statements') renderStatementsModule();
+      if (state.activeTab === 'margins') renderMarginsModule();
+    }
+
+    window.onload = function () {
+      loadState();
+      syncControlsFromState();
+      switchTab(state.activeTab || 'executive');
+      switchStatementSub(state.stmtSub || 'pnl');
+    };
+  </script>
+</body>
+</html>
